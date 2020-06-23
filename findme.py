@@ -11,6 +11,7 @@ limit = 200
 
 wiki = "/wiki/Where%27s_Wally%3F"
 basis = "https://en.wikipedia.org"
+
 def cleanWord(word):
     word = word.lower()
     word = word.replace('%', '')
@@ -21,6 +22,26 @@ def cleanWord(word):
     word = word.replace('(', '')
     word = word.replace(')', '')
     return word
+
+def linkFilter(link):
+    if(link[6:14] =='Category'):
+        return False
+    if(link[6:11] !='Where'):
+        return False
+    if(link[6:10] != 'Help'):
+        return False
+    if(link[6:15] != 'Wikipedia'):
+        return False
+    if(link[6:13] != 'Special'):
+        return False
+    if(link[6:10] != 'User'):
+        return False                    
+    if(link[6:10] != 'File'):
+        return False
+    if(link[6:12] != 'Portal'):
+        return False                                
+    else:
+        return True
 
 while(link_count < limit and found == False):
   
@@ -38,10 +59,10 @@ while(link_count < limit and found == False):
     for sentence in texts_on_screen:
         for word in sentence.split():
             if(cleanWord(word) == find):
-                print('found', word)
                 found = True
                 time.sleep(1)
                 webbrowser.open(site)
+                print('found', word)
                 print(link_count, 'Links later...')
                 break
         if(found):
@@ -53,7 +74,7 @@ while(link_count < limit and found == False):
     #FILTER LINKS TO BE JUST WIKI PAGES
     for link in links:
         if(str(link['href'])[0:6] == '/wiki/'):
-            if(link['href'][6:14] !='Category' and link['href'][6:11] !='Where' and link['href'][6:10] != 'Help' and link['href'][6:15] != 'Wikipedia'):
+            if(linkFilter(link['href'])):
                 random_links.append(str(link['href']))
         
     #SELECT RANDOM LINK IN RANDOM LINKS LIST
