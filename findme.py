@@ -7,7 +7,8 @@ import time
 find = str(input(" Find ? :"))
 found = False
 link_count = 0
-limit = 200
+limit = 1000
+words_looked_up = 0
 
 wiki = "/wiki/Where%27s_Wally%3F"
 basis = "https://en.wikipedia.org"
@@ -26,20 +27,26 @@ def cleanWord(word):
 def linkFilter(link):
     if(link[6:14] =='Category'):
         return False
-    if(link[6:11] !='Where'):
+    if(link[6:11] =='Where'):
         return False
-    if(link[6:10] != 'Help'):
+    if(link[6:10] == 'Help'):
         return False
-    if(link[6:15] != 'Wikipedia'):
+    if(link[6:15] == 'Wikipedia'):
         return False
-    if(link[6:13] != 'Special'):
+    if(link[6:13] == 'Special'):
         return False
-    if(link[6:10] != 'User'):
+    if(link[6:10] == 'User'):
         return False                    
-    if(link[6:10] != 'File'):
+    if(link[6:10] == 'File'):
         return False
-    if(link[6:12] != 'Portal'):
-        return False                                
+    if(link[6:12] == 'Portal'):
+        return False 
+    if(link[6:9] == 'ISO'):
+        return False 
+    if(link[6:9] == 'URL'):
+        return False  
+    if(link[6:15] == 'Copyright'):
+        return False                             
     else:
         return True
 
@@ -58,12 +65,13 @@ while(link_count < limit and found == False):
     
     for sentence in texts_on_screen:
         for word in sentence.split():
+            words_looked_up += 1
             if(cleanWord(word) == find):
                 found = True
                 time.sleep(1)
                 webbrowser.open(site)
                 print('found', word)
-                print(link_count, 'Links later...')
+                print(link_count, 'Links later...', words_looked_up)
                 break
         if(found):
             break
@@ -80,7 +88,11 @@ while(link_count < limit and found == False):
     #SELECT RANDOM LINK IN RANDOM LINKS LIST
     index = randint(0, len(random_links))
     #THAT LINK IS THE NEW WIKIPEDIA PAGE
-    wiki = random_links[index]
+    try:
+        wiki = random_links[index]
+    except:
+        print("No links found", site)
+        break
     #DISPLAY WIKI AND NUMBER OF LINKS ON PAGE
     print(wiki, len(random_links))
     link_count += 1
