@@ -50,6 +50,8 @@ def linkFilter(link):
     else:
         return True
 
+backup = []
+
 while(link_count < limit and found == False):
   
     site = basis + wiki
@@ -84,17 +86,22 @@ while(link_count < limit and found == False):
         if(str(link['href'])[0:6] == '/wiki/'):
             if(linkFilter(link['href'])):
                 random_links.append(str(link['href']))
-        
+    if(len(random_links) == 0):
+        random_links = backup
+    else:
+        backup = random_links
+
     #SELECT RANDOM LINK IN RANDOM LINKS LIST
     index = randint(0, len(random_links))
     #THAT LINK IS THE NEW WIKIPEDIA PAGE
     try:
         wiki = random_links[index]
     except:
-        print("No links found", site)
+        print("No links found", site, len(random_links))
         break
     #DISPLAY WIKI AND NUMBER OF LINKS ON PAGE
     print(wiki, len(random_links))
+    
     link_count += 1
 
 if(found == False):
